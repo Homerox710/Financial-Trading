@@ -10,3 +10,4 @@ BTC_USD_close
 
 BTC_USD_RETS  = na.omit(dailyReturn(BTC_USD_close, type = "log"))
 chart_Series(BTC_USD_RETS)
+

@@ -96,3 +96,59 @@ GFBANORTE.MX_3 <- Latam_GEI_Index %>%
 meanWALMART_3<- mean(WALMART_3$Adj.Close)
 sdWALMART_3<- sd(WALMART_3$Adj.Close)  
 Coef_W <- (sdWALMART_3/meanWALMART_3)*100  
+
+
+#analisis que resume comportamiento historico de las cinco cias 
+#desde marzo 2, 2019. Con precio cierre ajustado
+
+date <- "2019-3-2"  
+tickers <- c("GFNORTEO.MX", "TV", "WALMEX.MX", "BBD", "KOF")       
+
+portfolioPrices <- NULL
+for(ticker in tickers) {
+  portfolioPrices <- cbind(portfolioPrices, getSymbols.yahoo(ticker,
+                                                             from="2019-3-2", periodicity="daily",auto.assign=FALSE)[,6])  
+}
+
+portfolioPrices 
+
+view(portfolioPrices)
+
+
+#Graficar lineas con serie de tiempo precios cierre. con ggplot2
+library ("ggplot2")
+#Antes vamos a incluir el titulo de la variable tiempo en la columna 0  
+#exportar archivo excel
+library("dplyr")
+colnames(portfolioPrices)
+str(portfolioPrices)
+library("tibble")
+
+portfolioPrices <- as.data.frame(portfolioPrices)
+class(portfolioPrices)    
+
+portfolioPrices <- rownames_to_column(portfolioPrices, var="fecha")
+view(portfolioPrices)     
+
+#extraer este dataset.al escritorio
+#windows
+write.csv2(portfolioPrices , "C:/Users/Desktop/portfolioPrices.csv")
+#linux - Ejemplo de mi escritorio
+write.csv2(portfolioPrices , "/home/sonia/Desktop/portfolioPrices.csv")  
+
+#ajustar el dataframe para hacer la grafica de lineas
+library("tidyverse") 
+df <- portfolioPrices %>% select(fecha,GFNORTEO.MX.Adjusted,TV.Adjusted,
+                                 WALMEX.MX.Adjusted,BBD.Adjusted, KOF.Adjusted) %>%
+  gather (key="variable", value="value", -fecha)
+head(df)
+
+#ahora grafica de lineas para ver comportamiento de precio de
+#cierre ajustado 
+ggplot(df, aes(x=fecha, y=value)) + 
+  geom_line(aes(group=variable, linetype=variable))+
+  scale_color_manual(values=c("red", "blue", "black", "purple", "green"))+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),    
+        panel.grid.minor = element_blank())+
+  labs(title="Fluctuación Precio Cierre Ajustado desde Marzo 2019")        
