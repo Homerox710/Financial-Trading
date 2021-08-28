@@ -1,3 +1,8 @@
+
+#####################################################################
+       
+       ### SERIE DE TIEMPO
+
 library(quantmod)
 library(PerformanceAnalytics)
 
@@ -13,6 +18,10 @@ TVClose
 TVRets <- na.omit(dailyReturn(TVClose, type="log")) 
 #TVRets <- na.omit(dailyReturn(TVClose, type="arithmetic")) 
 chartSeries(TVRets)  
+
+#####################################################################
+
+      ### PROMEDIOS,DESVIACIONES, COEFICIENTES
 
 #Importar los datasets de cinco empresas de latam que seleccionamos 
 #en yahoo finance 
@@ -92,10 +101,27 @@ GFBANORTE.MX_3 <- Latam_GEI_Index %>%
   select(Company, Adj.Close) %>%
   filter(Company == "Grupo Financiero Banorte")
 
-#promedio, desviacion y coeficiente para cada cia.   
+#promedio, desviacion y coeficiente para cada cia.  
+
+  # FEMSA
+meanFEMSA_3<- mean(FEMSA_3$Adj.Close)
+sdFEMSA_3<- sd(FEMSA_3$Adj.Close)  
+Coef_F <- (sdFEMSA_3/meanFEMSA_3)*100  
+
+  # Walmart
 meanWALMART_3<- mean(WALMART_3$Adj.Close)
 sdWALMART_3<- sd(WALMART_3$Adj.Close)  
 Coef_W <- (sdWALMART_3/meanWALMART_3)*100  
+
+# Televisa
+meanTELEVISA_3<- mean(TELEVISA_3$Adj.Close)
+sdTELEVISA_3<- sd(TELEVISA_3$Adj.Close)  
+Coef_W <- (sdTELEVISA_3/meanTELEVISA_3)*100  
+
+
+#####################################################################
+
+      ### COMPORTAMIENTO HISTORICO
 
 
 #analisis que resume comportamiento historico de las cinco cias 
@@ -124,10 +150,10 @@ colnames(portfolioPrices)
 str(portfolioPrices)
 library("tibble")
 
-portfolioPrices <- as.data.frame(portfolioPrices)
+portfolioPrices <- as.data.frame(portfolioPrices) # verificamos que es un dataframe
 class(portfolioPrices)    
 
-portfolioPrices <- rownames_to_column(portfolioPrices, var="fecha")
+portfolioPrices <- rownames_to_column(portfolioPrices, var="fecha") # Agregamos columna fecha
 view(portfolioPrices)     
 
 #extraer este dataset.al escritorio
@@ -151,4 +177,92 @@ ggplot(df, aes(x=fecha, y=value)) +
   theme(panel.background = element_blank(),
         panel.grid.major = element_blank(),    
         panel.grid.minor = element_blank())+
-  labs(title="Fluctuación Precio Cierre Ajustado desde Marzo 2019")        
+  labs(title="Fluctuación Precio Cierre Ajustado desde Marzo 2019")   
+
+#####################################################################
+
+      ### HISTORICO DE RETORNO DIARIO SOBRE PRECIOS DE CIERRE
+
+date <- "2019-3-2"    
+TVClose <- getSymbols.yahoo("TV", from=date, auto.assign = F)[,6]
+TVClose
+
+TVRets <- na.omit(dailyReturn(TVClose, type="log")) 
+chartSeries(TVRets)    
+
+#Femsa    
+date <- "2019-3-2"  
+KOFClose <- getSymbols.yahoo("KOF", from=date, auto.assign = F)[,6]
+KOFClose   
+
+KOFRets <- na.omit(dailyReturn(KOFClose, type="log")) 
+chartSeries(KOFRets) 
+
+#Grupo financiero banorte
+date <- "2019-3-2"  
+GFNORTEO.MXClose <- getSymbols.yahoo("GFNORTEO.MX", from=date, auto.assign = F)[,6]
+GFNORTEO.MXClose
+
+GFNORTEO.MXRets <- na.omit(dailyReturn(GFNORTEO.MXClose, type="log")) 
+chartSeries(GFNORTEO.MXRets) 
+
+#Walmart México
+date <- "2019-3-2"  
+WALMEX.MXClose <- getSymbols.yahoo("WALMEX.MX", from=date, auto.assign = F)[,6]
+WALMEX.MXClose
+
+WALMEX.MXRets <- na.omit(dailyReturn(WALMEX.MXClose, type="log")) 
+chartSeries(WALMEX.MXRets) 
+
+#Bradesco
+date <- "2019-3-2"  
+BBDClose <- getSymbols.yahoo("BBD", from=date, auto.assign = F)[,6]
+BBDClose
+
+BBDCloseRets <- na.omit(dailyReturn(BBDClose, type="log")) 
+chartSeries(BBDCloseRets)     
+
+#Ver con velas japonesas 
+getSymbols( Symbols="BBF", src="yahoo",
+            from = "2019-03-02",
+            to = "2020-03-02")
+
+barChart(BBF, theme = "white")  
+
+candleChart(BBF, multi.col = TRUE, theme = "white")   
+#
+getSymbols( Symbols="WALMEX.MX", src="yahoo",
+            from = "2019-03-02",
+            to = "2020-03-02")
+
+barChart(WALMEX.MX, theme = "white")  
+
+candleChart(WALMEX.MX, multi.col = TRUE, theme = "white") 
+
+getSymbols( Symbols="TV", src="yahoo",
+            from = "2019-03-02",
+            to = "2020-03-02")
+
+barChart(TV, theme = "white")  
+
+candleChart(TV, multi.col = TRUE, theme = "white") 
+
+#
+getSymbols( Symbols="BFNORTEO.MX", src="yahoo",
+            from = "2019-03-02",
+            to = "2020-03-02")
+
+barChart(BFNORTEO.MX, theme = "white")  
+
+candleChart(BFNORTEO.MX, multi.col = TRUE, theme = "white") 
+
+#
+getSymbols( Symbols="KOF", src="yahoo",
+            from = "2019-03-02",
+            to = "2020-03-02")
+
+barChart(KOF, theme = "white")  
+
+candleChart(KOF, multi.col = TRUE, theme = "white") 
+install.packages("xts")
+
