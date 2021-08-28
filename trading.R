@@ -164,6 +164,7 @@ write.csv2(portfolioPrices , "/home/sonia/Desktop/portfolioPrices.csv")
 
 #ajustar el dataframe para hacer la grafica de lineas
 library("tidyverse") 
+# Fila fecha a columna
 df <- portfolioPrices %>% select(fecha,GFNORTEO.MX.Adjusted,TV.Adjusted,
                                  WALMEX.MX.Adjusted,BBD.Adjusted, KOF.Adjusted) %>%
   gather (key="variable", value="value", -fecha)
