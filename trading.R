@@ -267,3 +267,46 @@ barChart(KOF, theme = "white")
 candleChart(KOF, multi.col = TRUE, theme = "white") 
 install.packages("xts")
 
+#####################################################################
+
+      ### HISTOGRAMAS
+
+hist(TV$TV.Close, breaks= 60, col="blue")      
+
+hist(KOF$KOF.Close, breaks= 60, col="blue") 
+
+hist(BBF$BBF.Close, breaks= 60, col="blue") 
+
+hist(BFNORTEO.MX$BFNORTEO.MX.Close, breaks= 60, col="blue") 
+
+hist(WALMEX.MX$WALMEX.MX.Adjusted, breaks= 60, col="blue") 
+
+#####################################################################
+
+      ### ANALISIS TECNICO
+
+#TA: Technical analysis
+#BBands es bandas de bollinger. Vo es volumen: 
+#Nivel de actividad de un mercado. 
+#MACD es moving average convergence divergence
+KOF%>%Ad()%>%chartSeries()
+KOF%>%chartSeries(TA='addBBands();addVo();addMACD()',
+                  subset='2020')  
+
+
+KOF%>%chartSeries(TA='addBBands();addVo();addMACD();
+                  addRSI()',subset='2020') 
+
+
+#y ATR
+KOF%>%chartSeries(TA='addBBands();addMACD();addRSI();
+                  addATR()',subset='2020')   
+
+
+#####################################################################
+
+      ### RENTABILIDAD DEL PORTAFOLIO SEGÚN RIESGO
+
+
+
+#####################################################################
