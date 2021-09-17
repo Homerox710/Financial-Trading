@@ -362,4 +362,25 @@ table.AnnualizedReturns(portfolioReturns)
     ### OPTIMIZACIÓN DE PORTAFOLIO, MAXIMIZAR RETORNOS
 
 
+#modificar los pesos
+#los inputs: assets, constraints, objectives   
+#objetivo:
+library(PortfolioAnalytics)
+portf <- portfolio.spec(colnames(portfolioReturns))
+
+# Limites de la inversion
+portf <- add.constraint(portf, type="weight_sum", min_sum=1,
+                        max_sum=1)
+portf <- add.constraint(portf, type="box", min=.10, max=.40)
+portf <- add.objective(portf, type="return", name="mean")
+portf <- add.objective(portf, type="risk", name="StdDev")
+
+library(GenSA)
+?GenSA
+
+optPort <- optimize.portfolio(portfolioReturns, portf, 
+                              optimize_method ="GenSA")
+optPort  
+
+#####################################################################
 
