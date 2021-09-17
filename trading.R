@@ -307,6 +307,42 @@ KOF%>%chartSeries(TA='addBBands();addMACD();addRSI();
 
       ### RENTABILIDAD DEL PORTAFOLIO SEGÚN RIESGO
 
+library(PerformanceAnalytics)
+library(PortfolioAnalytics)
+tickers <- c("WALMEX.MX", "BBD", "KOF", "BBF", "TV")      
 
+weights <- c(.20, .20, 0.20, 0.20, 0.20)     
+
+portfolioPrices <- NULL
+for(ticker in tickers) {
+  portfolioPrices <- cbind(portfolioPrices, getSymbols.yahoo(ticker,
+                                                             from="2019-3-2", periodicity="daily",auto.assign=FALSE)[,6])  
+}
+
+portfolioPrices 
+#ROC: Rate of change. % de variacion entre precio actual y precio de
+#periodo anterior. 
+portfolioReturns <- na.omit(ROC(portfolioPrices))  
+portfolioReturns
+
+#Benchmark: con ILF> ishares Latin Funds
+
+benchmarkPrices <- getSymbols.yahoo('ILF',
+                                    from='2019-3-2', periodicity='daily', auto.assign=FALSE)[,6]
+
+benchmarkReturns <- na.omit(ROC(benchmarkPrices))     
+benchmarkReturns      
+
+#Retornos del portafolio segun el peso de cada accion. 
+#Sale una sola columna
+#porque son los retornos del portafolio segun los pesos. 
+#Funcion de returno de portafolio del paquete Performance analytics
+
+RetornosPortafolio <- Return.portfolio(portfolioReturns)
+RetornosPortafolio
+
+#Grafica ROC
+RetornosPortafolio %>% chartSeries(TA="addROC()",subset="2020")
+benchmarkReturns %>% chartSeries(TA="addROC()",subset="2020")
 
 #####################################################################
