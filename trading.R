@@ -320,6 +320,7 @@ for(ticker in tickers) {
 }
 
 portfolioPrices 
+
 #ROC: Rate of change. % de variacion entre precio actual y precio de
 #periodo anterior. 
 portfolioReturns <- na.omit(ROC(portfolioPrices))  
@@ -328,7 +329,7 @@ portfolioReturns
 #Benchmark: con ILF> ishares Latin Funds
 
 benchmarkPrices <- getSymbols.yahoo('ILF',
-                                    from='2019-3-2', periodicity='daily', auto.assign=FALSE)[,6]
+                                    from='2019-3-2', periodicity='daily', auto.assign=FALSE)[,6] # Precio de cierre ajustado
 
 benchmarkReturns <- na.omit(ROC(benchmarkPrices))     
 benchmarkReturns      
@@ -346,3 +347,19 @@ RetornosPortafolio %>% chartSeries(TA="addROC()",subset="2020")
 benchmarkReturns %>% chartSeries(TA="addROC()",subset="2020")
 
 #####################################################################
+
+    ### RENTABILIDAD DEL PORTAFOLIO SEGÚN RETORNO ESPERADO Y RIESGO
+
+# Si la beta es mayor a uno tiene un mayor riesgo que el mercado
+# Si la beta es menor a uno tiene un menor riesgo que elmercado
+CAPM.beta(portfolioReturns, benchmarkReturns, .035/252)     
+
+#Calcular retornos al año          
+table.AnnualizedReturns(portfolioReturns)
+
+#####################################################################
+
+    ### OPTIMIZACIÓN DE PORTAFOLIO, MAXIMIZAR RETORNOS
+
+
+
