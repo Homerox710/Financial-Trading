@@ -74,4 +74,58 @@ combined <- bind_rows(PFL, ILF)
 
 #####################################################################
 
-### BACKTESTING, EVAULUANDO SEÑALES
+### EVALUACION DE DESEMPEÑO (PLOTS)
+
+(p2 <- ggplot(PFL, aes(x = date, y = signal)) + 
+   geom_line(size = 1, colour = "blue") + 
+   labs(title = "Trading Signal", 
+        subtitle = "Senal de mi estrategia.Entre  +1 y -1.", 
+        y = "Position", 
+        x = "Date") + 
+   geom_hline(yintercept = 0) + 
+   theme_alphaplot())
+
+(p3 <- ggplot(PFL, aes(x = date, y = adjusted_close)) + 
+    geom_line(aes(colour = signal)) + 
+    scale_colour_gradient(low = "red") +
+    labs(title = "PFL Closing Price con Trading Signal", 
+         subtitle = "Cuando short y cuando long", 
+         y = "Precio Cierre Ajustado", 
+         x = "Fecha") + 
+    geom_hline(yintercept = 0) + 
+    theme_alphaplot())
+
+
+(p4 <- ggplot(combined, aes(x = date, y = cum_return_3m)) + 
+    geom_line(aes(colour = ticker)) + 
+    labs(title = "Rolling Returns (3 Meses)", 
+         y = "Retorno", 
+         x = "Fecha") + 
+    scale_y_continuous(labels = percent, limits = c(-0.5, 0.75)) + 
+    geom_hline(yintercept = 0) + 
+    theme_alphaplot())
+
+(p5 <- ggplot(combined, aes(x = date, y = drawdown)) + 
+    geom_line(aes(colour = ticker)) + 
+    labs(title = "Drawdown", 
+         subtitle = "Frecuencia de caidas, tamano de maximas caidas y tiempo de recuperacion", 
+         y = "Porcentaje drawdown", 
+         x = "Fecha") + 
+    scale_y_continuous(labels = percent) + 
+    geom_hline(yintercept = 0) + 
+    theme_alphaplot())
+
+
+(p6 <- ggplot(combined, aes(x = date, y = sharpe_12m)) + 
+    geom_line(aes(colour = ticker)) + 
+    labs(title = "Sharpe Ratio (12 Meses)", 
+         subtitle = "Sharpe ratio. Retornos por unidad de riesgo.", 
+         y = "Sharpe Ratio", 
+         x = "Fecha") + 
+    geom_hline(yintercept = 0) + 
+    theme_alphaplot())
+
+#####################################################################
+
+### EVALUACION DE RENTABILIDAD
+
