@@ -129,3 +129,36 @@ combined <- bind_rows(PFL, ILF)
 
 ### EVALUACION DE RENTABILIDAD
 
+library(tidyverse)
+library(tidyquant)
+library(PerformanceAnalytics)
+library(PortfolioAnalytics)
+
+stocks <- c("KOF", "TV", "BBD", "WALMEX.MX", "GFNORTEO.MX")
+
+stock_data <- tq_get(stocks,
+                     get = "stock.prices",
+                     from = Sys.Date() - months(12),
+                     to = Sys.Date())
+
+init.investment <- 1000
+growth <- mo_returns %>% arrange(date) %>%
+  mutate(final_value = init.investment * cumprod(1 + returns)) %>%
+  arrange(desc(final_value))
+growth %>% filter(date == max(date)) %>% select(-date)
+
+growth %>% ggplot(aes(x = date, y = final_value, color = symbol)) +
+  geom_line() +
+  # geom_smooth(method = "loess") +
+  labs(
+    title = "Portafolio individual: Comparando el crecimiento de US1000",
+    subtitle = "Visualizacion de desempeno",
+    x = "",
+    y = "Valor inversion"
+  ) +
+  theme_tq() + theme(legend.position = "right") +
+  scale_y_continuous(labels = scales::dollar)
+
+growth %>% ungroup() %>% filter(date == max(date)) %>% 
+  mutate(rank = row_number()) %>% top_n(5, final_value) %>% 
+  select(rank, symbol, final_value)     
